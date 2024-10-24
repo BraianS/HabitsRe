@@ -1,5 +1,6 @@
 package dev.braian.habitsre.domain.model
 
+import com.google.firebase.database.Exclude
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -12,10 +13,11 @@ data class Habit(
     var backgroundColor: String?,
     var difficulty: Difficulty? = Difficulty.Easy,
     var userId: String? = null,
-    var createdAt: Long?
+    var createdAt: Long?,
 
 ) {
     var timeDecreased: Long? = 0
+    var timeDifferenceInMinutes: Long? = 0
 
     constructor() : this(null, "", "", Difficulty.Easy, "", 0)
 
@@ -29,7 +31,7 @@ data class Habit(
     }
 
     fun addDecreaseTime(difficulty: Difficulty?):Boolean {
-        return if( Difficulty.Easy.timeInMinutes > getTImeDifferenceInMinutes()) {
+        return if( Difficulty.Easy.timeInMinutes > this.getTImeDifferenceInMinutes()) {
             false
         } else {
             this.timeDecreased = this.timeDecreased?.plus(difficulty!!.timeInMinutes)
@@ -37,6 +39,7 @@ data class Habit(
         }
     }
 
+    @Exclude
     fun getTImeDifferenceInMinutes(): Long {
         val createdAt = LocalDateTime.ofInstant(Instant.ofEpochSecond(createdAt!!), ZoneOffset.UTC)
         val now = LocalDateTime.now(ZoneId.systemDefault())

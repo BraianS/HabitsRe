@@ -13,7 +13,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import dagger.hilt.android.AndroidEntryPoint
 import dev.braian.habitsre.domain.model.DataProvider
 import dev.braian.habitsre.presentation.navigation.MyBottomAppBar
-import dev.braian.habitsre.presentation.screen.LoginScreen
+import dev.braian.habitsre.presentation.screen.WelcomeScreen
 import dev.braian.habitsre.ui.theme.HabitsReTheme
 import dev.braian.habitsre.viewmodel.AuthViewModel
 import dev.braian.habitsre.viewmodel.HabitViewModel
@@ -24,12 +24,13 @@ class MainActivity : ComponentActivity() {
     private val authViewModel by viewModels<AuthViewModel>()
     private val habitViewModel by viewModels<HabitViewModel>()
 
-
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         installSplashScreen()
         enableEdgeToEdge()
+
+        
 
         setContent {
             HabitsReTheme {
@@ -41,7 +42,7 @@ class MainActivity : ComponentActivity() {
 
                      MyBottomAppBar(authViewModel,habitViewModel )
                  } else {
-                     LoginScreen(authViewModel)
+                     WelcomeScreen(authViewModel)
                  }
             }
         }

@@ -1,9 +1,10 @@
 package dev.braian.habitsre.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.braian.habitsre.core.Response
+import dev.braian.habitsre.core.Constants
 import dev.braian.habitsre.domain.model.Habit
 import dev.braian.habitsre.domain.repository.HabitRepository
 import kotlinx.coroutines.CoroutineScope
@@ -23,15 +24,11 @@ class HabitViewModel @Inject constructor(
     private val _habitList = MutableStateFlow<List<Habit>>(emptyList())
     val habitList: StateFlow<List<Habit>> = _habitList.asStateFlow()
 
-    init {
-        loadHabits()
-    }
 
-    fun loadHabits(){
-        viewModelScope.launch {
-            repository.getHabits().collect{ habits ->
-                _habitList.value = habits
-            }
+    fun getHabits() = CoroutineScope(Dispatchers.IO).launch {
+        repository.getHabits().collect{ habits ->
+            Log.i(Constants.TAG.HABIT_VIEW_MODEL, "Get habits...")
+            _habitList.value = habits
         }
     }
 
@@ -51,12 +48,10 @@ class HabitViewModel @Inject constructor(
             repository.deletedHabitById(habitId)
     }
 
-    fun decreaseProgress(habit: Habit) = CoroutineScope(Dispatchers.IO).launch {
+    fun decreaseProgress(habit: Habit) = viewModelScope.launch {
         val response = repository.decreaseProgress(habit)
+        getHabits()
 
-        if(response is Response.Success) {
-            loadHabits()
-        }
     }
 
 }

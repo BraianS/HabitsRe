@@ -43,6 +43,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.graphics.toColorInt
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import dev.braian.habitsre.R
 import dev.braian.habitsre.core.HabitMock
@@ -61,16 +62,11 @@ fun HomeScreen(
     navController: NavController?
 ) {
     val currentUser by authViewModel.currentUser.collectAsState()
-    val habits by habitViewModel.habitList.collectAsState()
-
-    LaunchedEffect(currentUser) {
-        currentUser?.let { user ->
-            habitViewModel.loadHabits()
-        }
-    }
+    val habits by habitViewModel.habitList.collectAsStateWithLifecycle()
 
     Column(modifier = Modifier.fillMaxSize()) {
         Welcome(authViewModel)
+        habitViewModel.getHabits()
 
         if (habits.isEmpty()) {
             Box(
@@ -88,6 +84,7 @@ fun HomeScreen(
                 )
             }
         } else {
+
             LazyColumn(Modifier.fillMaxSize()) {
                 items(habits) { habit ->
                     HabitCard(
@@ -213,24 +210,35 @@ fun HabitCardContent(
 fun HabitCardContentPreview() {
     HabitProgressCard(HabitMock.mockHabit,  onClick = {}, onDecrease = {})
 }
-
 @Composable
 fun HabitProgressCard(
     habit: Habit?,
     onClick: () -> Unit,
     onDecrease: () -> Unit
 ) {
-
-    var isShrinking by remember { mutableStateOf(false)}
+    var isShrinking by remember { mutableStateOf(false) }
     val scaleAnimation by animateFloatAsState(
         targetValue = if (isShrinking) 0.95f else 1f,
-        animationSpec = tween(durationMillis = 300), label = ""
+        animationSpec = tween(durationMillis = 300),
+        label = ""
     )
 
-
-    var timeDifference by remember { mutableStateOf(0L) }
+    var timeDifference by remember { mutableStateOf(habit?.getTImeDifferenceInMinutes() ?: 0) }
     var progressAnimation by remember { mutableStateOf(0f) }
     var waveOffset by remember { mutableStateOf(0f) }
+
+    // Trigger animation when the decrease button is pressed
+    LaunchedEffect(isShrinking) {
+        // Animation toggle back to normal size after a short delay
+        if (isShrinking) {
+            delay(300L)
+            isShrinking = false
+        }
+    }
+
+    LaunchedEffect(habit) {
+        timeDifference = habit?.getTImeDifferenceInMinutes() ?: 0L
+    }
 
     LaunchedEffect(Unit) {
         while (true) {
@@ -241,7 +249,7 @@ fun HabitProgressCard(
         }
     }
 
-    // Infinite animation weabe
+    // Infinite wave animation
     LaunchedEffect(Unit) {
         while (true) {
             waveOffset += 0.1f
@@ -262,10 +270,19 @@ fun HabitProgressCard(
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             HabitWaveCanvas(progressAnimation, waveOffset, habit)
-            HabitCardContent(habit, days, hours, minutes, onDecrease)
+            HabitCardContent(habit, days, hours, minutes) {
+                // Trigger the decrease and update the timeDifference
+                onDecrease()
+                // Decrease the time difference by a set amount (e.g., 30 minutes)
+                timeDifference -= habit?.difficulty?.timeInMinutes ?: 0
+                if (timeDifference < 0) timeDifference = 0 // Ensure it doesn't go below zero
+
+                isShrinking = true // Set shrinking to true to animate the scale down
+            }
         }
     }
 }
+
 
 @Composable
 fun HabitWaveCanvas(

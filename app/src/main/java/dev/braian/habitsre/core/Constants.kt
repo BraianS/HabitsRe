@@ -10,7 +10,8 @@ import dev.braian.habitsre.domain.model.Habit
 enum class Screen {
     HomeScreen,
     AddHabitScreen,
-    ProfileScreen
+    ProfileScreen,
+    LoginScreen;
 }
 
 object HabitMock {
@@ -50,7 +51,9 @@ class Constants private constructor() {
     }
 
     object TAG {
-        const val HABIT_DETAIL_SCREEN = "habitDetailScreen"
+        val WELCOME_SCREEN = "WelcomeScreen"
+        const val HABIT_VIEW_MODEL = "HabitViewModel"
+        const val HABIT_DETAIL_SCREEN = "HabitDetailScreen"
         const val ADD_HABIT_SCREEN = "HabitAddScreen"
         const val HOME_SCREEN = "HabitRepositoryImpl"
         const val HABIT_REPOSITORY_IMPL = "HabitRepositoryImpl"

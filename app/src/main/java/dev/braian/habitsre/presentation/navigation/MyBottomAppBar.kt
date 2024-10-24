@@ -32,6 +32,7 @@ import dev.braian.habitsre.core.Screen
 import dev.braian.habitsre.presentation.screen.AddHabitScreen
 import dev.braian.habitsre.presentation.screen.HabitDetailScreen
 import dev.braian.habitsre.presentation.screen.HomeScreen
+import dev.braian.habitsre.presentation.screen.LoginScreen
 import dev.braian.habitsre.presentation.screen.ProfileScreen
 import dev.braian.habitsre.viewmodel.AuthViewModel
 import dev.braian.habitsre.viewmodel.HabitViewModel
@@ -148,6 +149,10 @@ fun MyBottomAppBar(authViewModel: AuthViewModel, habitViewModel: HabitViewModel)
                     habitViewModel,
                     navController = navigationController
                 )
+            }
+
+            composable(Screen.LoginScreen.name) {
+                LoginScreen(authViewModel = authViewModel)
             }
 
             composable(

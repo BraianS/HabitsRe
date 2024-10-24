@@ -75,6 +75,7 @@ dependencies {
     implementation("com.google.firebase:firebase-database:21.0.0")
     val credentials = "1.2.2"
     val identity = "1.1.0"
+    var accompanist_version = "0.36.0"
 
     implementation("androidx.core:core-splashscreen:1.0.0")
 
@@ -109,6 +110,12 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+
+    // Pager and Indicators - Accompanist
+    implementation ("com.google.accompanist:accompanist-pager:$accompanist_version")
+    implementation ("com.google.accompanist:accompanist-pager-indicators:$accompanist_version")
+
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
 
 }
 
