@@ -16,6 +16,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flowOf
+import java.time.LocalDateTime
+import java.time.ZoneOffset
 import javax.inject.Inject
 
 class HabitRepositoryImpl @Inject constructor(
@@ -143,5 +145,14 @@ class HabitRepositoryImpl @Inject constructor(
         }
     }
 
-
+    override fun resetHabit(habitId: String): Response<Boolean> {
+        return try {
+            val instant = LocalDateTime.now().toInstant(ZoneOffset.UTC).epochSecond
+            val updateMap = mapOf("lastResetAt" to instant)
+            providesRealtimeDBReference.child(habitId).updateChildren(updateMap)
+            Response.Success(true)
+        } catch (e: Exception) {
+            Response.Failure(e)
+        }
+    }
 }

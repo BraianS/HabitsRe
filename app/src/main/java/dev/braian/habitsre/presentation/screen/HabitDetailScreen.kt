@@ -1,13 +1,20 @@
 package dev.braian.habitsre.presentation.screen
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -33,7 +40,11 @@ fun HabitDetailScreen(
     val habit by habitViewModel.getHabitById(habitId).collectAsState(initial = null)
 
     habit?.let {
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column(
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxHeight()
+        ) {
             Row(modifier = Modifier, verticalAlignment = Alignment.CenterVertically) {
                 Column {
                     Text(text = it.name!!, style = MaterialTheme.typography.titleMedium)
@@ -44,14 +55,13 @@ fun HabitDetailScreen(
                     val dateInMillis = epochTimeInSeconds * 1000
                     val formattedDate = dateFormat.format(Date(dateInMillis))
 
-                    Text(text = " $formattedDate")
+                    Text(text = "Created at $formattedDate")
                 }
                 Spacer(modifier = Modifier.weight(1f))
 
-                // Edit button
                 Button(
                     onClick = { onEditClick(it.id!!) },
-                  colors = ButtonDefaults.buttonColors(Color.Gray)
+                    colors = ButtonDefaults.buttonColors(Color.Gray)
                 ) {
                     Text(text = "Edit")
                 }
@@ -71,8 +81,37 @@ fun HabitDetailScreen(
 
             Spacer(modifier = Modifier.height(15.dp))
 
-            Column(modifier = Modifier) {
+            Column(
+                modifier = Modifier.fillMaxHeight().fillMaxWidth(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+
+                Spacer(modifier = Modifier.height(20.dp))
+                // Canvas and time display
                 TimeDifferenceDisplayWithCanvasCircle(habit)
+
+                // Reset button below the canvas
+                Spacer(modifier = Modifier.weight(1f))
+
+                Button(
+                    onClick = {
+                        habitViewModel.resetHabit(habit?.id!!)
+                        onBackClick()
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        Color.White,
+                        contentColor = Color.Black
+                    )
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Refresh,
+                        contentDescription = "Reset icon",
+                        modifier = Modifier.size(24.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(text = "Reset")
+                }
             }
         }
     } ?: run {

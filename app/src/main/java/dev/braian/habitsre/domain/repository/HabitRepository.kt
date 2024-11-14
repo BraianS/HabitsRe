@@ -12,4 +12,5 @@ interface HabitRepository {
     suspend fun getHabits(): Flow<List<Habit>>
     fun getHabitById(habitId: String): Flow<Habit?>
     fun decreaseProgress(habit: Habit): Response<Boolean>
+    fun resetHabit(habitId: String): Response<Boolean>
 }

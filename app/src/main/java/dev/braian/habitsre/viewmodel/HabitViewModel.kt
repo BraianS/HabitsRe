@@ -51,7 +51,9 @@ class HabitViewModel @Inject constructor(
     fun decreaseProgress(habit: Habit) = viewModelScope.launch {
         val response = repository.decreaseProgress(habit)
         getHabits()
-
+    }
+    fun resetHabit(habitId:String) = CoroutineScope(Dispatchers.IO).launch {
+        repository.resetHabit(habitId)
     }
 
 }

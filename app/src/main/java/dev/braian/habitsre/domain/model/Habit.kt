@@ -14,7 +14,7 @@ data class Habit(
     var difficulty: Difficulty? = Difficulty.Easy,
     var userId: String? = null,
     var createdAt: Long?,
-
+    var lastResetAt: Long? = null
 ) {
     var timeDecreased: Long? = 0
     var timeDifferenceInMinutes: Long? = 0
@@ -41,7 +41,7 @@ data class Habit(
 
     @Exclude
     fun getTImeDifferenceInMinutes(): Long {
-        val createdAt = LocalDateTime.ofInstant(Instant.ofEpochSecond(createdAt!!), ZoneOffset.UTC)
+        val createdAt = LocalDateTime.ofInstant(Instant.ofEpochSecond(lastResetAt!!), ZoneOffset.UTC)
         val now = LocalDateTime.now(ZoneId.systemDefault())
 
         var timeDifference  = ChronoUnit.MINUTES.between(createdAt, now)
@@ -68,6 +68,7 @@ data class Habit(
         this.difficulty = difficulty
         this.userId = userId
         this.createdAt = createdAt
+        this.lastResetAt = createdAt
     }
 
     constructor(

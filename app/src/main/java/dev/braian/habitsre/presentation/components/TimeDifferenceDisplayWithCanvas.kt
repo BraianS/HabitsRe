@@ -4,7 +4,6 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
@@ -55,8 +54,8 @@ fun TimeDifferenceDisplayWithCanvasCircle(habit: Habit? = null) {
     val minutes = timeDifference % 60
 
     Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
+        modifier = Modifier,
+        contentAlignment = Alignment.Center,
     ) {
 
         Canvas(modifier = Modifier.size(200.dp)) {
